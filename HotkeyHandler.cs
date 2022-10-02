@@ -25,15 +25,10 @@ namespace WindowTool
         private IntPtr currentWindowHandle;
         private Rectangle currentWindowRectangle;
         private Point currentMouseOffset;
-        private Point resizeMousePositionStart;
 
         private int resizeStartWidth;
         private int resizeStartHeight;
-        private int currentWindowX;
-        private int currentWindowY;
-        private int currentWindowWidth;
-        private int currentWindowHeight;
-
+        
 
         internal void Start()
         {
