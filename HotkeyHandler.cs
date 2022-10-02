@@ -28,7 +28,6 @@ namespace WindowTool
 
         private int resizeStartWidth;
         private int resizeStartHeight;
-        
 
         internal void Start()
         {
@@ -57,6 +56,8 @@ namespace WindowTool
             if (currentWindowHandle == IntPtr.Zero) return;
 
             Point mousePosition = Control.MousePosition;
+            
+            Screen currentScreen = Screen.FromHandle(currentWindowHandle);
 
             if (isMovingWindow)
             {

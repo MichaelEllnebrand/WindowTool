@@ -17,7 +17,7 @@ namespace WindowTool
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Form form = new mainForm();
+            Form form = new MainForm();
             //form.Show();
             //form.Hide();
             Application.Run();

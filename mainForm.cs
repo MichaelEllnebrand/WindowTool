@@ -11,11 +11,11 @@ using System.Windows.Forms;
 
 namespace WindowTool
 {
-    public partial class mainForm : Form
+    public partial class MainForm : Form
     {
         HotkeyHandler hotkeyHandler;
 
-        public mainForm()
+        public MainForm()
         {
             InitializeComponent();
             
