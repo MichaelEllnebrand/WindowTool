@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
-using System.Linq.Expressions;
-using System.Text;
 using System.Windows.Forms;
 using GlobalLowLevelHooks;
 
@@ -24,10 +19,16 @@ namespace WindowTool
 
         private IntPtr currentWindowHandle;
         private Rectangle currentWindowRectangle;
-        private Point currentMouseOffset;
+        private Point moveWindowMouseOffset;
+        private Point resizeWindowsMouseOffset;
 
         private int resizeStartWidth;
         private int resizeStartHeight;
+
+        private bool clampToScreen;
+        private Point currentWindowPosition;
+        private int currentWindowWidth;
+        private int currentWindowHeight;
 
         internal void Start()
         {
@@ -49,6 +50,10 @@ namespace WindowTool
             keyboardHook.Uninstall();
         }
 
+        internal void SetClampToScreen(bool clamp)
+        {
+            clampToScreen = clamp;
+        }
 
         private void MouseHook_MouseMove(MouseHook.MSLLHOOKSTRUCT mouseStruct)
         {
@@ -56,28 +61,37 @@ namespace WindowTool
             if (currentWindowHandle == IntPtr.Zero) return;
 
             Point mousePosition = Control.MousePosition;
-            
-            Screen currentScreen = Screen.FromHandle(currentWindowHandle);
 
             if (isMovingWindow)
             {
-                int x = mousePosition.X - currentMouseOffset.X;
-                int y = mousePosition.Y - currentMouseOffset.Y;
-                // TODO: Option to clamp to current screen
+                currentWindowPosition.X = mousePosition.X - moveWindowMouseOffset.X;
+                currentWindowPosition.Y = mousePosition.Y - moveWindowMouseOffset.Y;
 
-                Window.SetWindowPosition(currentWindowHandle, x, y);
+                if (clampToScreen)
+                {
+                    Screen currentScreen = Screen.FromHandle(currentWindowHandle);
+                    currentWindowPosition.X = Math.Clamp(currentWindowPosition.X, currentScreen.WorkingArea.X, currentScreen.WorkingArea.X + currentScreen.WorkingArea.Width - currentWindowWidth);
+                    currentWindowPosition.Y = Math.Clamp(currentWindowPosition.Y, currentScreen.WorkingArea.Y, currentScreen.WorkingArea.Y + currentScreen.WorkingArea.Height - currentWindowHeight);
+                }
+
+                Window.SetWindowPosition(currentWindowHandle, currentWindowPosition.X, currentWindowPosition.Y);
             }
 
             if (isResizingWindow)
             {
-                int width = resizeStartWidth + mousePosition.X - currentMouseOffset.X;
-                int height = resizeStartHeight + mousePosition.Y - currentMouseOffset.Y;
+                currentWindowWidth = resizeStartWidth + mousePosition.X - resizeWindowsMouseOffset.X;
+                currentWindowHeight = resizeStartHeight + mousePosition.Y - resizeWindowsMouseOffset.Y;
 
-                Window.SetWindowSize(currentWindowHandle, width, height);
+                if (clampToScreen)
+                {
+                    Screen currentScreen = Screen.FromHandle(currentWindowHandle);
+                    currentWindowWidth = Math.Clamp(currentWindowWidth, 1, currentScreen.WorkingArea.Width - (currentWindowPosition.X - currentScreen.Bounds.X));
+                    currentWindowHeight = Math.Clamp(currentWindowHeight, 1, currentScreen.WorkingArea.Height - (currentWindowPosition.Y - currentScreen.Bounds.Y));
+                }
 
+                Window.SetWindowSize(currentWindowHandle, currentWindowWidth, currentWindowHeight);
             }
         }
-
 
         private void KeyboardHook_KeyDown(KeyboardHook.VKeys key)
         {
@@ -122,11 +136,7 @@ namespace WindowTool
         {
             isMovingWindow = true;
             isResizingWindow = false;
-
-            Point mousePostion = Control.MousePosition;
-            currentWindowRectangle = Window.GetWindowPosition(currentWindowHandle);
-            currentMouseOffset.X = mousePostion.X - currentWindowRectangle.X;
-            currentMouseOffset.Y = mousePostion.Y - currentWindowRectangle.Y;
+            SetStartingOffsets();
         }
 
         private void StopMovingWindow()
@@ -138,19 +148,30 @@ namespace WindowTool
         {
             isMovingWindow = false;
             isResizingWindow = true;
-
-            Point mousePostion = Control.MousePosition;
-            currentWindowRectangle = Window.GetWindowPosition(currentWindowHandle);
-            resizeStartWidth = currentWindowRectangle.Width - currentWindowRectangle.X;
-            resizeStartHeight = currentWindowRectangle.Height - currentWindowRectangle.Y;
-
-            currentMouseOffset.X = mousePostion.X;
-            currentMouseOffset.Y = mousePostion.Y;
+            SetStartingOffsets();
         }
 
         private void StopResizingWindow()
         {
             isResizingWindow = false;
+        }
+
+        private void SetStartingOffsets()
+        {
+            Point mousePostion = Control.MousePosition;
+            currentWindowRectangle = Window.GetWindowPosition(currentWindowHandle);
+
+            moveWindowMouseOffset.X = mousePostion.X - currentWindowRectangle.X;
+            moveWindowMouseOffset.Y = mousePostion.Y - currentWindowRectangle.Y;
+            resizeWindowsMouseOffset.X = mousePostion.X;
+            resizeWindowsMouseOffset.Y = mousePostion.Y;
+
+
+            resizeStartWidth = currentWindowRectangle.Width - currentWindowRectangle.X;
+            resizeStartHeight = currentWindowRectangle.Height - currentWindowRectangle.Y;
+
+            currentWindowWidth = resizeStartWidth;
+            currentWindowHeight = resizeStartHeight;
         }
     }
 }

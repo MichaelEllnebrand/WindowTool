@@ -67,5 +67,10 @@ namespace WindowTool
             this.WindowState = FormWindowState.Minimized;
             this.Hide();
         }
+
+        private void clampMenuItem_Click(object sender, EventArgs e)
+        {
+            hotkeyHandler.SetClampToScreen(clampMenuItem.Checked);
+        }
     }
 }

@@ -87,6 +87,7 @@
             this.clampMenuItem.Name = "clampMenuItem";
             this.clampMenuItem.Size = new System.Drawing.Size(180, 22);
             this.clampMenuItem.Text = "Clamp to screen";
+            this.clampMenuItem.Click += new System.EventHandler(this.clampMenuItem_Click);
             // 
             // exitMenuItem
             // 
@@ -95,7 +96,7 @@
             this.exitMenuItem.Text = "Exit";
             this.exitMenuItem.Click += new System.EventHandler(this.exitMenuItem_Click);
             // 
-            // mainForm
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -106,7 +107,7 @@
             this.Margin = new System.Windows.Forms.Padding(5);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "mainForm";
+            this.Name = "MainForm";
             this.Text = "WindowTool";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.mainForm_FormClosing);
             this.mainMenuStrip.ResumeLayout(false);
