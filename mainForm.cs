@@ -74,11 +74,11 @@ namespace WindowTool
         {
             if (clampMenuItem.Checked)
             {
-                notifyIcon.Icon = new Icon("ClampTrue.ico");
+                notifyIcon.Icon = WindowTool.Properties.Resources.ClampTrue;
             }
             else
             {
-                notifyIcon.Icon = new Icon("ClampFalse.ico");
+                notifyIcon.Icon = WindowTool.Properties.Resources.ClampFalse;
             }
 
             hotkeyHandler.SetClampToScreen(clampMenuItem.Checked);
