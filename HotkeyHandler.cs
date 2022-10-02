@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
+using System.Drawing;
 using System.Linq.Expressions;
 using System.Text;
+using System.Windows.Forms;
 using GlobalLowLevelHooks;
 
 namespace WindowTool
@@ -13,22 +15,22 @@ namespace WindowTool
         private MouseHook mouseHook;
         private KeyboardHook keyboardHook;
 
-        private bool isMovingWindow;
-        private bool isResizingWindow;
-
         private bool isLeftControlDown;
         private bool isLeftWinDown;
         private bool isLeftAltDown;
 
+        private bool isMovingWindow;
+        private bool isResizingWindow;
 
+        private IntPtr currentWindowHandle;
+        private Rectangle currentWindowRectangle;
+        private Point currentMouseOffset;
 
-
-    internal void Start()
+        internal void Start()
         {
             mouseHook = new MouseHook();
             mouseHook.MouseMove += MouseHook_MouseMove;
             mouseHook.Install();
-
             keyboardHook = new KeyboardHook();
             keyboardHook.KeyDown += KeyboardHook_KeyDown;
             keyboardHook.KeyUp += KeyboardHook_KeyUp;
@@ -48,6 +50,18 @@ namespace WindowTool
         private void MouseHook_MouseMove(MouseHook.MSLLHOOKSTRUCT mouseStruct)
         {
             if (isMovingWindow == false && isResizingWindow == false) return;
+            if (currentWindowHandle == IntPtr.Zero) return;
+
+            Point mousePosition = Control.MousePosition;
+
+            if (isMovingWindow)
+            {
+                int x = mousePosition.X - currentMouseOffset.X;
+                int y = mousePosition.Y - currentMouseOffset.Y;
+                // TODO: Option to clamp to current screen
+
+                Window.SetWindowPosition(currentWindowHandle, x, y);
+            }
         }
 
 
@@ -56,7 +70,7 @@ namespace WindowTool
             if (key == KeyboardHook.VKeys.LCONTROL) isLeftControlDown = true;
             if (key == KeyboardHook.VKeys.LWIN) isLeftWinDown = true;
             if (key == KeyboardHook.VKeys.LMENU) isLeftAltDown = true;
-            CheckHotKeyDown();
+            CheckHotKey();
         }
 
         private void KeyboardHook_KeyUp(KeyboardHook.VKeys key)
@@ -64,14 +78,14 @@ namespace WindowTool
             if (key == KeyboardHook.VKeys.LCONTROL) isLeftControlDown = false;
             if (key == KeyboardHook.VKeys.LWIN) isLeftWinDown = false;
             if (key == KeyboardHook.VKeys.LMENU) isLeftAltDown = false;
-            CheckHotKeyDown();
+            CheckHotKey();
         }
 
-        private void CheckHotKeyDown()
+        private void CheckHotKey()
         {
             if (isLeftControlDown == true && isLeftWinDown == true)
             {
-                // save window
+                if (currentWindowHandle == IntPtr.Zero) SaveWindowAtPointer();
 
                 if (isLeftAltDown == false && isMovingWindow == false) StartMovingWindow();
                 if (isLeftAltDown == true && isResizingWindow == false) StartResizingWindow();
@@ -80,24 +94,31 @@ namespace WindowTool
             {
                 if (isMovingWindow) StopMovingWindow();
                 if (isResizingWindow) StopResizingWindow();
+                currentWindowHandle = IntPtr.Zero;
             }
-
-            Debug.WriteLine($"isMovingWindow {isMovingWindow} isResizingWindow {isResizingWindow}");
         }
 
+        private void SaveWindowAtPointer()
+        {
+            Point mousePosition = Control.MousePosition;
+            currentWindowHandle = Window.GetWindow(mousePosition);
+        }
 
         private void StartMovingWindow()
         {
             isMovingWindow = true;
             isResizingWindow = false;
+
+            Point mousePostion = Control.MousePosition;
+            currentWindowRectangle = Window.GetWindowPosition(currentWindowHandle);
+            currentMouseOffset.X = mousePostion.X - currentWindowRectangle.X;
+            currentMouseOffset.Y = mousePostion.Y - currentWindowRectangle.Y;
         }
 
         private void StopMovingWindow()
         {
             isMovingWindow = false;
-
         }
-
 
         private void StartResizingWindow()
         {
