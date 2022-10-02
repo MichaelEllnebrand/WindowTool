@@ -21,7 +21,8 @@ namespace WindowTool
             
             hotkeyHandler = new HotkeyHandler();
             hotkeyHandler.Start();
-            
+            clampMenuItem_Click(this,EventArgs.Empty);
+
             Application.ApplicationExit += Application_ApplicationExit;
             HideForm();
         }
@@ -41,7 +42,8 @@ namespace WindowTool
 
         private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            ShowForm();
+            clampMenuItem.Checked = !clampMenuItem.Checked;
+            clampMenuItem_Click(this, EventArgs.Empty);
         }
 
         private void settingsMenuItem_Click(object sender, EventArgs e)
@@ -70,6 +72,15 @@ namespace WindowTool
 
         private void clampMenuItem_Click(object sender, EventArgs e)
         {
+            if (clampMenuItem.Checked)
+            {
+                notifyIcon.Icon = new Icon("ClampTrue.ico");
+            }
+            else
+            {
+                notifyIcon.Icon = new Icon("ClampFalse.ico");
+            }
+
             hotkeyHandler.SetClampToScreen(clampMenuItem.Checked);
         }
     }

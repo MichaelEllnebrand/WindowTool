@@ -72,27 +72,28 @@
             this.clampMenuItem,
             this.exitMenuItem});
             this.notifyMenuStrip.Name = "notifyMenuStrip";
-            this.notifyMenuStrip.Size = new System.Drawing.Size(181, 92);
+            this.notifyMenuStrip.Size = new System.Drawing.Size(161, 70);
             // 
             // settingsMenuItem
             // 
             this.settingsMenuItem.Name = "settingsMenuItem";
-            this.settingsMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.settingsMenuItem.Size = new System.Drawing.Size(160, 22);
             this.settingsMenuItem.Text = "Settings";
+            this.settingsMenuItem.Visible = false;
             this.settingsMenuItem.Click += new System.EventHandler(this.settingsMenuItem_Click);
             // 
             // clampMenuItem
             // 
             this.clampMenuItem.CheckOnClick = true;
             this.clampMenuItem.Name = "clampMenuItem";
-            this.clampMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.clampMenuItem.Size = new System.Drawing.Size(160, 22);
             this.clampMenuItem.Text = "Clamp to screen";
             this.clampMenuItem.Click += new System.EventHandler(this.clampMenuItem_Click);
             // 
             // exitMenuItem
             // 
             this.exitMenuItem.Name = "exitMenuItem";
-            this.exitMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitMenuItem.Size = new System.Drawing.Size(160, 22);
             this.exitMenuItem.Text = "Exit";
             this.exitMenuItem.Click += new System.EventHandler(this.exitMenuItem_Click);
             // 

@@ -53,6 +53,7 @@ namespace WindowTool
         internal void SetClampToScreen(bool clamp)
         {
             clampToScreen = clamp;
+
         }
 
         private void MouseHook_MouseMove(MouseHook.MSLLHOOKSTRUCT mouseStruct)
