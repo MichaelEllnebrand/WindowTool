@@ -33,6 +33,11 @@ namespace WindowTool
             
         }
 
+        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ShowForm();
+        }
+
         private void settingsMenuItem_Click(object sender, EventArgs e)
         {
             ShowForm();
