@@ -25,6 +25,15 @@ namespace WindowTool
         private IntPtr currentWindowHandle;
         private Rectangle currentWindowRectangle;
         private Point currentMouseOffset;
+        private Point resizeMousePositionStart;
+
+        private int resizeStartWidth;
+        private int resizeStartHeight;
+        private int currentWindowX;
+        private int currentWindowY;
+        private int currentWindowWidth;
+        private int currentWindowHeight;
+
 
         internal void Start()
         {
@@ -61,6 +70,15 @@ namespace WindowTool
                 // TODO: Option to clamp to current screen
 
                 Window.SetWindowPosition(currentWindowHandle, x, y);
+            }
+
+            if (isResizingWindow)
+            {
+                int width = resizeStartWidth + mousePosition.X - currentMouseOffset.X;
+                int height = resizeStartHeight + mousePosition.Y - currentMouseOffset.Y;
+
+                Window.SetWindowSize(currentWindowHandle, width, height);
+
             }
         }
 
@@ -124,6 +142,14 @@ namespace WindowTool
         {
             isMovingWindow = false;
             isResizingWindow = true;
+
+            Point mousePostion = Control.MousePosition;
+            currentWindowRectangle = Window.GetWindowPosition(currentWindowHandle);
+            resizeStartWidth = currentWindowRectangle.Width - currentWindowRectangle.X;
+            resizeStartHeight = currentWindowRectangle.Height - currentWindowRectangle.Y;
+
+            currentMouseOffset.X = mousePostion.X;
+            currentMouseOffset.Y = mousePostion.Y;
         }
 
         private void StopResizingWindow()
