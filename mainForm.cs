@@ -13,12 +13,23 @@ namespace WindowTool
 {
     public partial class mainForm : Form
     {
+        HotkeyHandler hotkeyHandler;
+
         public mainForm()
         {
             InitializeComponent();
-            HideForm();
+            
+            hotkeyHandler = new HotkeyHandler();
+            hotkeyHandler.Start();
+            
             Application.ApplicationExit += Application_ApplicationExit;
+            HideForm();
         }
+        private void Application_ApplicationExit(object sender, EventArgs e)
+        {
+            hotkeyHandler.Stop();
+        }
+
         private void mainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
@@ -26,11 +37,6 @@ namespace WindowTool
                 e.Cancel = true;
                 HideForm();
             }
-        }
-
-        private void Application_ApplicationExit(object sender, EventArgs e)
-        {
-            
         }
 
         private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
