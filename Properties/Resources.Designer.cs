@@ -63,6 +63,26 @@ namespace WindowTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
+        internal static System.Drawing.Icon AltClampFalse {
+            get {
+                object obj = ResourceManager.GetObject("AltClampFalse", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon AltClampTrue {
+            get {
+                object obj = ResourceManager.GetObject("AltClampTrue", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
         internal static System.Drawing.Icon ClampFalse {
             get {
                 object obj = ResourceManager.GetObject("ClampFalse", resourceCulture);

@@ -19,12 +19,13 @@ namespace WindowTool
         public MainForm()
         {
             InitializeComponent();
-                        
+
             hotkeyHandler = new HotkeyHandler();
             hotkeyHandler.Start();
 
             Application.ApplicationExit += Application_ApplicationExit;
 
+            iconMenuItem.Checked = Properties.Settings.Default.AltIcon;
             bool isClamped = Properties.Settings.Default.ClampedToScreen;
             handleSetClampToScreen(isClamped);
 
@@ -79,6 +80,10 @@ namespace WindowTool
         {
             handleSetClampToScreen(clampMenuItem.Checked);
         }
+        private void iconMenuItem_Click(object sender, EventArgs e)
+        {
+            updateIcon();
+        }
 
         private void handleSetClampToScreen(bool isClamped)
         {
@@ -86,15 +91,36 @@ namespace WindowTool
             Properties.Settings.Default.Save();
             clampMenuItem.Checked = isClamped;
             hotkeyHandler.SetClampToScreen(isClamped);
+            updateIcon();
 
+            /*
             if (isClamped)
             {
-                notifyIcon.Icon = WindowTool.Properties.Resources.ClampTrue;
+                notifyIcon.Icon = iconMenuItem.Checked ? Properties.Resources.ClampTrue : Properties.Resources.AltClampTrue;
+                //notifyIcon.Icon = WindowTool.Properties.Resources.AltClampTrue;
             }
             else
             {
-                notifyIcon.Icon = WindowTool.Properties.Resources.ClampFalse;
+                notifyIcon.Icon = iconMenuItem.Checked ? Properties.Resources.ClampFalse : Properties.Resources.AltClampFalse;
+                //notifyIcon.Icon = WindowTool.Properties.Resources.AltClampFalse;
+            }
+            */
+        }
+
+        private void updateIcon()
+        {
+            Properties.Settings.Default.AltIcon = iconMenuItem.Checked;
+            Properties.Settings.Default.Save();
+
+            if (clampMenuItem.Checked)
+            {
+                notifyIcon.Icon = iconMenuItem.Checked ? Properties.Resources.AltClampTrue : Properties.Resources.ClampTrue;
+            }
+            else
+            {
+                notifyIcon.Icon = iconMenuItem.Checked ? Properties.Resources.AltClampFalse : Properties.Resources.ClampFalse;
             }
         }
+
     }
 }
