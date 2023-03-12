@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,14 +19,18 @@ namespace WindowTool
         public MainForm()
         {
             InitializeComponent();
-            
+                        
             hotkeyHandler = new HotkeyHandler();
             hotkeyHandler.Start();
-            clampMenuItem_Click(this,EventArgs.Empty);
 
             Application.ApplicationExit += Application_ApplicationExit;
+
+            bool isClamped = Properties.Settings.Default.ClampedToScreen;
+            handleSetClampToScreen(isClamped);
+
             HideForm();
         }
+
         private void Application_ApplicationExit(object sender, EventArgs e)
         {
             hotkeyHandler.Stop();
@@ -72,7 +77,17 @@ namespace WindowTool
 
         private void clampMenuItem_Click(object sender, EventArgs e)
         {
-            if (clampMenuItem.Checked)
+            handleSetClampToScreen(clampMenuItem.Checked);
+        }
+
+        private void handleSetClampToScreen(bool isClamped)
+        {
+            Properties.Settings.Default.ClampedToScreen = isClamped;
+            Properties.Settings.Default.Save();
+            clampMenuItem.Checked = isClamped;
+            hotkeyHandler.SetClampToScreen(isClamped);
+
+            if (isClamped)
             {
                 notifyIcon.Icon = WindowTool.Properties.Resources.ClampTrue;
             }
@@ -80,8 +95,6 @@ namespace WindowTool
             {
                 notifyIcon.Icon = WindowTool.Properties.Resources.ClampFalse;
             }
-
-            hotkeyHandler.SetClampToScreen(clampMenuItem.Checked);
         }
     }
 }
