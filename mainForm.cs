@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,14 +19,19 @@ namespace WindowTool
         public MainForm()
         {
             InitializeComponent();
-            
+
             hotkeyHandler = new HotkeyHandler();
             hotkeyHandler.Start();
-            clampMenuItem_Click(this,EventArgs.Empty);
 
             Application.ApplicationExit += Application_ApplicationExit;
+
+            iconMenuItem.Checked = Properties.Settings.Default.AltIcon;
+            bool isClamped = Properties.Settings.Default.ClampedToScreen;
+            handleSetClampToScreen(isClamped);
+
             HideForm();
         }
+
         private void Application_ApplicationExit(object sender, EventArgs e)
         {
             hotkeyHandler.Stop();
@@ -72,16 +78,49 @@ namespace WindowTool
 
         private void clampMenuItem_Click(object sender, EventArgs e)
         {
-            if (clampMenuItem.Checked)
+            handleSetClampToScreen(clampMenuItem.Checked);
+        }
+        private void iconMenuItem_Click(object sender, EventArgs e)
+        {
+            updateIcon();
+        }
+
+        private void handleSetClampToScreen(bool isClamped)
+        {
+            Properties.Settings.Default.ClampedToScreen = isClamped;
+            Properties.Settings.Default.Save();
+            clampMenuItem.Checked = isClamped;
+            hotkeyHandler.SetClampToScreen(isClamped);
+            updateIcon();
+
+            /*
+            if (isClamped)
             {
-                notifyIcon.Icon = WindowTool.Properties.Resources.ClampTrue;
+                notifyIcon.Icon = iconMenuItem.Checked ? Properties.Resources.ClampTrue : Properties.Resources.AltClampTrue;
+                //notifyIcon.Icon = WindowTool.Properties.Resources.AltClampTrue;
             }
             else
             {
-                notifyIcon.Icon = WindowTool.Properties.Resources.ClampFalse;
+                notifyIcon.Icon = iconMenuItem.Checked ? Properties.Resources.ClampFalse : Properties.Resources.AltClampFalse;
+                //notifyIcon.Icon = WindowTool.Properties.Resources.AltClampFalse;
             }
-
-            hotkeyHandler.SetClampToScreen(clampMenuItem.Checked);
+            */
         }
+
+        private void updateIcon()
+        {
+            Properties.Settings.Default.AltIcon = iconMenuItem.Checked;
+            Properties.Settings.Default.Save();
+
+            if (clampMenuItem.Checked)
+            {
+                notifyIcon.Icon = iconMenuItem.Checked ? Properties.Resources.AltClampTrue : Properties.Resources.ClampTrue;
+            }
+            else
+            {
+                notifyIcon.Icon = iconMenuItem.Checked ? Properties.Resources.AltClampFalse : Properties.Resources.ClampFalse;
+            }
+        }
+
     }
 }
