@@ -67,12 +67,21 @@ namespace WindowTool
             {
                 currentWindowPosition.X = mousePosition.X - moveWindowMouseOffset.X;
                 currentWindowPosition.Y = mousePosition.Y - moveWindowMouseOffset.Y;
-
                 if (clampToScreen)
                 {
                     Screen currentScreen = Screen.FromHandle(currentWindowHandle);
-                    currentWindowPosition.X = Math.Clamp(currentWindowPosition.X, currentScreen.WorkingArea.X, currentScreen.WorkingArea.X + currentScreen.WorkingArea.Width - currentWindowWidth);
-                    currentWindowPosition.Y = Math.Clamp(currentWindowPosition.Y, currentScreen.WorkingArea.Y, currentScreen.WorkingArea.Y + currentScreen.WorkingArea.Height - currentWindowHeight);
+                    int remainingAreaX = currentScreen.WorkingArea.X + currentScreen.WorkingArea.Width - currentWindowWidth;
+                    if (remainingAreaX < currentScreen.WorkingArea.X)
+                    {
+                        remainingAreaX = currentScreen.WorkingArea.X;
+                    }
+                    int remainingAreaY = currentScreen.WorkingArea.Y + currentScreen.WorkingArea.Height - currentWindowHeight;
+                    if (remainingAreaY < currentScreen.WorkingArea.Y) 
+                    {
+                        remainingAreaY = currentScreen.WorkingArea.Y;
+                    }
+                    currentWindowPosition.X = Math.Clamp(currentWindowPosition.X, currentScreen.WorkingArea.X, remainingAreaX);
+                    currentWindowPosition.Y = Math.Clamp(currentWindowPosition.Y, currentScreen.WorkingArea.Y, remainingAreaY);
                 }
 
                 Window.SetWindowPosition(currentWindowHandle, currentWindowPosition.X, currentWindowPosition.Y);
