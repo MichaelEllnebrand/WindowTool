@@ -13,6 +13,8 @@ WindowTool is a small utility that does just one thing. It helps the user move a
 
 Download and run "WindowTool.exe".
 
+If you want the tool to automaticlly run on startup then add a shortcut to the tool in: C:\Users\\\<your-user-name\>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+
 ## Credits
 
 Uses code from:
