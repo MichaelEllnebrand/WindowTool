@@ -146,6 +146,7 @@ namespace WindowTool
         {
             isMovingWindow = true;
             isResizingWindow = false;
+            Window.HandleMaximizedWindow(currentWindowHandle);
             SetStartingOffsets();
         }
 
@@ -158,6 +159,7 @@ namespace WindowTool
         {
             isMovingWindow = false;
             isResizingWindow = true;
+            Window.HandleMaximizedWindow(currentWindowHandle);
             SetStartingOffsets();
         }
 
@@ -175,7 +177,6 @@ namespace WindowTool
             moveWindowMouseOffset.Y = mousePostion.Y - currentWindowRectangle.Y;
             resizeWindowsMouseOffset.X = mousePostion.X;
             resizeWindowsMouseOffset.Y = mousePostion.Y;
-
 
             resizeStartWidth = currentWindowRectangle.Width - currentWindowRectangle.X;
             resizeStartHeight = currentWindowRectangle.Height - currentWindowRectangle.Y;
