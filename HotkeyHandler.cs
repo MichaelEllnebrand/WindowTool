@@ -43,11 +43,20 @@ namespace WindowTool
 
         internal void Stop()
         {
-            mouseHook.MouseMove -= MouseHook_MouseMove;
-            mouseHook.Uninstall();
-            keyboardHook.KeyDown -= KeyboardHook_KeyDown;
-            keyboardHook.KeyUp -= KeyboardHook_KeyUp;
-            keyboardHook.Uninstall();
+            if (mouseHook != null)
+            {
+                mouseHook.MouseMove -= MouseHook_MouseMove;
+                mouseHook.Uninstall();
+                mouseHook = null;
+            }
+
+            if (keyboardHook != null)
+            {
+                keyboardHook.KeyDown -= KeyboardHook_KeyDown;
+                keyboardHook.KeyUp -= KeyboardHook_KeyUp;
+                keyboardHook.Uninstall();
+                keyboardHook = null;
+            }
         }
 
         internal void SetClampToScreen(bool clamp)
@@ -178,8 +187,8 @@ namespace WindowTool
             resizeWindowsMouseOffset.X = mousePostion.X;
             resizeWindowsMouseOffset.Y = mousePostion.Y;
 
-            resizeStartWidth = currentWindowRectangle.Width - currentWindowRectangle.X;
-            resizeStartHeight = currentWindowRectangle.Height - currentWindowRectangle.Y;
+            resizeStartWidth = currentWindowRectangle.Width;
+            resizeStartHeight = currentWindowRectangle.Height;
 
             currentWindowWidth = resizeStartWidth;
             currentWindowHeight = resizeStartHeight;

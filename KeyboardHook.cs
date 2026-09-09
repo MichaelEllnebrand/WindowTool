@@ -252,7 +252,11 @@ namespace GlobalLowLevelHooks
         /// </summary>
         public void Uninstall()
         {
+            if (hookID == IntPtr.Zero)
+                return;
+
             UnhookWindowsHookEx(hookID);
+            hookID = IntPtr.Zero;
         }
 
         /// <summary>
