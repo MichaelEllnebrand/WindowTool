@@ -29,8 +29,20 @@ namespace WindowTool
         [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
         private static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
 
+        [StructLayout(LayoutKind.Sequential)]
+        private struct RECT
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+
+            public int Width => Right - Left;
+            public int Height => Bottom - Top;
+        }
+
         [DllImport("user32.dll")]
-        private static extern int GetWindowRect(IntPtr hwnd, out Rectangle rect);
+        private static extern bool GetWindowRect(IntPtr hwnd, out RECT rect);
 
         [DllImport("user32.dll")]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
@@ -73,8 +85,8 @@ namespace WindowTool
 
         public static Rectangle GetWindowPosition(IntPtr hWnd)
         {
-            GetWindowRect(hWnd, out Rectangle rect);
-            return rect;
+            GetWindowRect(hWnd, out RECT rect);
+            return new Rectangle(rect.Left, rect.Top, rect.Width, rect.Height);
         }
 
         public static void HandleMaximizedWindow(IntPtr hWnd)
@@ -86,7 +98,7 @@ namespace WindowTool
                 Rectangle windowDimentions = GetWindowPosition(hWnd);
                 ShowWindow(hWnd, SW_RESTORE);
                 SetForegroundWindow(hWnd);
-                SetWindowPos(hWnd, 0, windowDimentions.Top, windowDimentions.Right, windowDimentions.Width, windowDimentions.Height, SWP_SHOWWINDOW);
+                SetWindowPos(hWnd, 0, windowDimentions.Left, windowDimentions.Top, windowDimentions.Width, windowDimentions.Height, SWP_SHOWWINDOW);
             }
         }
     }
